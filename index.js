@@ -103,4 +103,34 @@ mailerTypes.mandrillMailer = function (options) {
             console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
         });
     }
-}
+};
+
+mailerTypes.sparkpostMailer = function (options) {
+    this.SparkPost = require('sparkpost');
+    this.client = new this.SparkPost(options.key);
+
+    this.send = function (message) {
+        var newTos = [];
+        message.to.forEach(function (toItem) {
+            newTos.push({ "address": toItem });
+        });
+
+        this.client.transmissions.send({
+            transmissionBody: {
+                content: {
+                    from: message.from,
+                    subject: message.subject,
+                    text: message.body
+                },
+                recipients: newTos
+            }
+        }, function(err, res) {
+            if (err) {
+                console.log('Whoops! Something went wrong');
+                console.log(err);
+            } else {
+                console.log('Woohoo! You just sent your first mailing!');
+            }
+        });
+    }
+};
