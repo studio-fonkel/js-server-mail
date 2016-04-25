@@ -1,0 +1,28 @@
+{
+  "http://example.com": {
+    "mail_service": "mandrill",
+    "options": {
+      "key": "YOUR SECRET KEY"
+    },
+    "emails": [
+      {
+        "from": "you@example.com",
+        "fromNameField": "Name",
+        "to": ["you@example.com"],
+        "replyToField": "Email",
+        "subject": "Contact on example.com",
+        "headerText": "Yo the visitor sent you this:",
+        "footerText": "Woyo"
+      },
+      {
+        "from": "you@example.com",
+        "fromName": "Your name",
+        "toField": "Email",
+        "replyTo": "you@example.com",
+        "subject": "Yo thank you for contact",
+        "headerText": "You sent:",
+        "footerText": "Woyo"
+      }
+    ]
+  }
+}
