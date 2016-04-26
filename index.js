@@ -137,11 +137,15 @@ mailerTypes.sparkpostMailer = function (options) {
             }
         }, function(err, res) {
             if (err) {
+                console.log(err)
                 return {
                     error: err
                 }
             }
             else {
+                console.log({
+                    sucsess: message
+                })
                 return {
                     succsess: true
                 }
