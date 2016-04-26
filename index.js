@@ -13,6 +13,10 @@ app.all('/send-mail', function(request, response, next) {
     next();
 });
 
+app.get('/send-mail', function(request, response) {
+    response.send('Yo');
+});
+
 // The API route.
 app.post('/send-mail', function(request, response) {
     var mailInfo = settings[request.headers.origin];
