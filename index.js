@@ -22,6 +22,8 @@ app.post('/send-mail', function(request, response) {
     var inputObject = createInputObject(input);
     var bodyText = createBodyText(input);
 
+    var functions = []
+
     mailInfo.emails.forEach(function (mailItem) {
         var mailBody = '';
 
@@ -53,7 +55,9 @@ app.post('/send-mail', function(request, response) {
         mailer.send(email);
     });
 
-    response.send('Hello World!');
+    response.send({
+        success: true
+    });
 });
 
 var createInputObject = function (inputArray) {
@@ -100,12 +104,15 @@ mailerTypes.mandrillMailer = function (options) {
         }, function(result) {
             console.log(result);
         }, function(e) {
-            console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+            return {
+                error: 'A mandrill error occurred: ' + e.name + ' - ' + e.message
+            }
         });
     }
 };
 
 mailerTypes.sparkpostMailer = function (options) {
+    var that = this;
     this.SparkPost = require('sparkpost');
     this.client = new this.SparkPost(options.key);
 
@@ -115,7 +122,7 @@ mailerTypes.sparkpostMailer = function (options) {
             newTos.push({ "address": toItem });
         });
 
-        this.client.transmissions.send({
+        that.client.transmissions.send({
             transmissionBody: {
                 content: {
                     from: message.from,
@@ -126,10 +133,14 @@ mailerTypes.sparkpostMailer = function (options) {
             }
         }, function(err, res) {
             if (err) {
-                console.log('Whoops! Something went wrong');
-                console.log(err);
-            } else {
-                console.log('Woohoo! You just sent your first mailing!');
+                return {
+                    error: err
+                }
+            }
+            else {
+                return {
+                    succsess: true
+                }
             }
         });
     }

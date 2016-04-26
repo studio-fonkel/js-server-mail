@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/studio-fonkel/js-server-mail#readme",
   "dependencies": {
+    "async": "^2.0.0-rc.3",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "mandrill-api": "^1.0.45",
