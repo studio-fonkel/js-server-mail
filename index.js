@@ -137,6 +137,7 @@ mailerTypes.sparkpostMailer = function (options) {
             }
         }, function(err, res) {
             if (err) {
+                console.log(message)
                 console.log(err)
                 return {
                     error: err
