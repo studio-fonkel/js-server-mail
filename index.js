@@ -19,49 +19,56 @@ app.get('/send-mail', function(request, response) {
 
 // The API route.
 app.post('/send-mail', function(request, response) {
-    var mailInfo = settings[request.headers.origin];
-    var className = mailInfo.mail_service + "Mailer";
-    var mailer = new mailerTypes[className](mailInfo.options);
-    var input = request.body;
-    var inputObject = createInputObject(input);
-    var bodyText = createBodyText(input);
+    if (settings[request.headers.origin]) {
+        var mailInfo = settings[request.headers.origin];
+        var className = mailInfo.mail_service + "Mailer";
+        var mailer = new mailerTypes[className](mailInfo.options);
+        var input = request.body;
+        var inputObject = createInputObject(input);
+        var bodyText = createBodyText(input);
 
-    var functions = []
+        var functions = []
 
-    mailInfo.emails.forEach(function (mailItem) {
-        var mailBody = '';
+        mailInfo.emails.forEach(function (mailItem) {
+            var mailBody = '';
 
-        if (mailItem.headerText) {
-            mailBody += mailItem.headerText + "\n\n";
-        }
+            if (mailItem.headerText) {
+                mailBody += mailItem.headerText + "\n\n";
+            }
 
-        mailBody += bodyText + "\n";
+            mailBody += bodyText + "\n";
 
-        if (mailItem.footerText) {
-            mailBody += mailItem.footerText;
-        }
+            if (mailItem.footerText) {
+                mailBody += mailItem.footerText;
+            }
 
-        var email = {
-            subject: mailItem.subject,
-            body: mailBody,
-            from: mailItem.from
-        };
+            var email = {
+                subject: mailItem.subject,
+                body: mailBody,
+                from: mailItem.from
+            };
 
-        if (mailItem.replyToField) { email.replyTo = inputObject[mailItem.replyToField] }
-        else { email.replyTo = mailItem.replyTo }
+            if (mailItem.replyToField) { email.replyTo = inputObject[mailItem.replyToField] }
+            else { email.replyTo = mailItem.replyTo }
 
-        if (mailItem.fromNameField) { email.fromName = inputObject[mailItem.fromNameField] }
-        else { email.fromName = mailItem.fromName }
+            if (mailItem.fromNameField) { email.fromName = inputObject[mailItem.fromNameField] }
+            else { email.fromName = mailItem.fromName }
 
-        if (mailItem.toField) { email.to = [inputObject[mailItem.toField]] }
-        else { email.to = mailItem.to }
+            if (mailItem.toField) { email.to = [inputObject[mailItem.toField]] }
+            else { email.to = mailItem.to }
 
-        mailer.send(email);
-    });
+            mailer.send(email);
+        });
 
-    response.send({
-        success: true
-    });
+        response.send({
+            success: true
+        });
+    }
+    else {
+        response.status(400).send({
+            error: "Site is not allowed to sent email via me."
+        });
+    }
 });
 
 var createInputObject = function (inputArray) {
