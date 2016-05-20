@@ -88,6 +88,7 @@ var createBodyText = function (values) {
 }
 
 app.listen(3017);
+console.log('Yo server is running on 3017')
 
 var mailerTypes = {};
 
@@ -133,18 +134,34 @@ mailerTypes.sparkpostMailer = function (options) {
             newTos.push({ "address": toItem });
         });
 
+        var transmissionBody = {
+          recipients: newTos
+        }
+
+        if (options.template_id) {
+          var htmlText = message.body.replace(/\n/g, '<br>');
+
+          transmissionBody['content'] = {
+            template_id: options.template_id
+          }
+          transmissionBody['substitution_data'] = {
+            from: message.from,
+            subject: message.subject,
+            text: htmlText
+          }
+        }
+        else {
+          transmissionBody['content'] = {
+            from: message.from,
+            subject: message.subject,
+            text: message.body,
+          }
+        }
+
         that.client.transmissions.send({
-            transmissionBody: {
-                content: {
-                    from: message.from,
-                    subject: message.subject,
-                    text: message.body
-                },
-                recipients: newTos
-            }
+            transmissionBody
         }, function(err, res) {
             if (err) {
-                console.log(message)
                 console.log(err)
                 return {
                     error: err
