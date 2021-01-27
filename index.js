@@ -14,7 +14,7 @@ app.all('/send-mail', function(request, response, next) {
 });
 
 app.get('/send-mail', function(request, response) {
-    response.send('Yo');
+    response.send('Status 200: Mailscript OK');
 });
 
 // The API route.
@@ -24,6 +24,7 @@ app.post('/send-mail', function(request, response) {
         var className = mailInfo.mail_service + "Mailer";
         var mailer = new mailerTypes[className](mailInfo.options);
         var input = request.body;
+
         var inputObject = createInputObject(input);
         var bodyText = createBodyText(input);
 
